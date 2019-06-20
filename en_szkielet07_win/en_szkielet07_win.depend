@@ -1003,3 +1003,33 @@
 
 1561061901 d:\informatyka\grafika\en_szkielet07_win\wajcha.h
 
+1561062344 source:h:\github\openglengineanimation\en_szkielet07_win\lodepng.cpp
+	"lodepng.h"
+	<stdio.h>
+	<stdlib.h>
+	<fstream>
+
+1561062344 h:\github\openglengineanimation\en_szkielet07_win\lodepng.h
+	<string.h>
+	<vector>
+	<string>
+	"lodepng.h"
+	<iostream>
+	"lodepng.h"
+
+1561062344 source:h:\github\openglengineanimation\en_szkielet07_win\shaderprogram.cpp
+	"shaderprogram.h"
+
+1561062344 h:\github\openglengineanimation\en_szkielet07_win\shaderprogram.h
+	"GL/glew.h"
+	"stdio.h"
+
+1561062343 h:\github\openglengineanimation\en_szkielet07_win\glew\include\gl\glew.h
+	<stddef.h>
+	<inttypes.h>
+	<stdint.h>
+	<inttypes.h>
+	<Availability.h>
+	<OpenGL/glu.h>
+	<GL/glu.h>
+
