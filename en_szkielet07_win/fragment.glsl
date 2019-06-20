@@ -11,14 +11,21 @@ in vec2 iTexCoord1;
 
 uniform sampler2D textureMap0;
 uniform sampler2D textureMap1;
+uniform sampler2D textureMap2;
 
 out vec4 pixelColor; //Fragment shader output variable
 
 void main(void) {
-    vec4 kd=mix(texture(textureMap0,iTexCoord0),texture(textureMap1,iTexCoord1),0.2); //Material color for a diffused light
+    vec4 kd=vec4(0,0,0,1);
     vec4 ld=vec4(1,1,1,1); //Color of the diffused light
     vec4 ks=vec4(1,1,1,1); //Material color for a reflected light
     vec4 ls=vec4(1,1,1,1); //Color of the reflected light
+
+    vec4 texColor=texture(textureMap0,iTexCoord0);
+    vec4 texColor2=texture(textureMap1,iTexCoord1);
+    vec4 texColor3=texture(textureMap2,iTexCoord0);
+    kd = mix(texColor , mix(texColor2 , texColor3 , 0.75) , 0.25);
+    ks = texColor3;
 
     vec4 ml=normalize(l);
     vec4 ml2=normalize(l2);

@@ -46,6 +46,9 @@ ShaderProgram *sp; //Pointer to the shader program
 
 GLuint tex0;
 GLuint tex1;
+GLuint tex2;
+GLuint tex3;
+GLuint tex4;
 
 //Error processing callback procedure
 void error_callback(int error, const char* description) {
@@ -114,6 +117,9 @@ void initOpenGLProgram(GLFWwindow* window) {
 
     tex0=readTexture("metal.png");
     tex1=readTexture("sky.png");
+    tex2=readTexture("metal_spec.png");
+    tex3=readTexture("metal_jajca.png");
+    tex4=readTexture("amelinium.png");
 }
 
 //Release resources allocated by the program
@@ -122,12 +128,15 @@ void freeOpenGLProgram(GLFWwindow* window) {
 
     glDeleteTextures(1,&tex0);
     glDeleteTextures(1,&tex1);
+    glDeleteTextures(1,&tex2);
+    glDeleteTextures(1,&tex3);
+    glDeleteTextures(1,&tex4);
 
     delete sp;
 }
 
 glm::mat4 drawSth(glm::mat4 M , float *verts , float *normals , float *texCoords ,\
-                  unsigned int vertexCount , GLuint tex0 , GLuint tex1){
+                  unsigned int vertexCount , GLuint tex0 , GLuint tex1 , GLuint tex2){
 
     glUniform1i(sp->u("textureMap0"),0);
     glActiveTexture(GL_TEXTURE0);
@@ -136,6 +145,10 @@ glm::mat4 drawSth(glm::mat4 M , float *verts , float *normals , float *texCoords
     glUniform1i(sp->u("textureMap1"),1);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D,tex1);
+
+    glUniform1i(sp->u("textureMap2"),2);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D,tex2);
 
 	glUniformMatrix4fv(sp->u("M"),1,false,glm::value_ptr(M));
 
@@ -197,8 +210,8 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
     //M2=glm::translate(M2,glm::vec3(0.0f,-4.0f,0.0f));
     glm::mat4 M2=glm::rotate(M,angle_z,glm::vec3(0.0f,0.0f,1.0f));
 
-    drawSth(M2 , wal1Vertices , wal1Normals , wal1TexCoords , wal1VertexCount , tex0 , tex1);
-    drawSth(M2 , wal2Vertices , wal2Normals , wal2TexCoords , wal2VertexCount , tex0 , tex1);
+    drawSth(M2 , wal1Vertices , wal1Normals , wal1TexCoords , wal1VertexCount , tex4 , tex1 , tex3);
+    drawSth(M2 , wal2Vertices , wal2Normals , wal2TexCoords , wal2VertexCount , tex0 , tex1 , tex2);
 
     glm::mat4 M4=glm::translate(M,glm::vec3(cos(angle_z+PI/2)*0.95,sin(angle_z+PI/2)*0.95,0.9f));
     if(sin(angle_z)>0)
@@ -206,9 +219,9 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
     else
         M4=glm::rotate(M4,-((float)asin(sqrt(1-pow(sin(angle_z)*0.95,2)/16))-PI/2),glm::vec3(0.0f,0.0f,1.0f));
 
-    drawSth(M4 , wajchaVertices , wajchaNormals , wajchaTexCoords , wajchaVertexCount , tex0 , tex1);
+    drawSth(M4 , wajchaVertices , wajchaNormals , wajchaTexCoords , wajchaVertexCount , tex0 , tex1 , tex2);
     M4=glm::translate(M4,glm::vec3(0.0f,0.0f,-1.8f));
-    drawSth(M4 , wajchaVertices , wajchaNormals , wajchaTexCoords , wajchaVertexCount , tex0 , tex1);
+    drawSth(M4 , wajchaVertices , wajchaNormals , wajchaTexCoords , wajchaVertexCount , tex0 , tex1 , tex2);
 
     glm::mat4 M5=glm::translate(M,glm::vec3(cos(angle_z-PI/2)*0.95,sin(angle_z-PI/2)*0.95,2.7f));
     if(sin(angle_z+PI)>0)
@@ -216,21 +229,21 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
     else
         M5=glm::rotate(M5,-((float)asin(sqrt(1-pow(sin(angle_z+PI)*0.95,2)/16))-PI/2),glm::vec3(0.0f,0.0f,1.0f));
 
-    drawSth(M5 , wajchaVertices , wajchaNormals , wajchaTexCoords , wajchaVertexCount , tex0 , tex1);
+    drawSth(M5 , wajchaVertices , wajchaNormals , wajchaTexCoords , wajchaVertexCount , tex0 , tex1 , tex2);
     M5=glm::translate(M5,glm::vec3(0.0f,0.0f,-5.4f));
-    drawSth(M5 , wajchaVertices , wajchaNormals , wajchaTexCoords , wajchaVertexCount , tex0 , tex1);
+    drawSth(M5 , wajchaVertices , wajchaNormals , wajchaTexCoords , wajchaVertexCount , tex0 , tex1 , tex2);
 
     float z = sqrt(16-pow(0.95*sin(angle_z),2));
     glm::mat4 M3=glm::translate(M,glm::vec3(0.0f,z+sin(angle_z+PI/2)*0.95,0.9f));
-    drawSth(M3 , pistonVertices , pistonNormals , pistonTexCoords , pistonVertexCount , tex0 , tex1);
+    drawSth(M3 , pistonVertices , pistonNormals , pistonTexCoords , pistonVertexCount , tex4 , tex1 , tex3);
     M3=glm::translate(M3,glm::vec3(0.0f,0.0f,-1.8f));
-    drawSth(M3 , pistonVertices , pistonNormals , pistonTexCoords , pistonVertexCount , tex0 , tex1);
+    drawSth(M3 , pistonVertices , pistonNormals , pistonTexCoords , pistonVertexCount , tex4 , tex1 , tex3);
 
     z = sqrt(16-pow(0.95*sin(angle_z+PI),2));
     M=glm::translate(M,glm::vec3(0.0f,z+sin(angle_z-PI/2)*0.95,2.7f));
-    drawSth(M , pistonVertices , pistonNormals , pistonTexCoords , pistonVertexCount , tex0 , tex1);
+    drawSth(M , pistonVertices , pistonNormals , pistonTexCoords , pistonVertexCount , tex4 , tex1 , tex3);
     M=glm::translate(M,glm::vec3(0.0f,0.0f,-5.4f));
-    drawSth(M , pistonVertices , pistonNormals , pistonTexCoords , pistonVertexCount , tex0 , tex1);
+    drawSth(M , pistonVertices , pistonNormals , pistonTexCoords , pistonVertexCount , tex4 , tex1 , tex3);
 
     glfwSwapBuffers(window); //Copy back buffer to front buffer
 }
