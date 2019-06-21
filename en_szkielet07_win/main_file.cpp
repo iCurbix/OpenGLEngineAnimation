@@ -36,6 +36,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "piston.h"
 #include "wajcha.h"
 #include "blok.h"
+#include "head.h"
+#include "walek.h"
 
 float speed_x=0; //angular speed in radians
 float speed_y=0; //angular speed in radians
@@ -46,12 +48,15 @@ float aspectRatio=1;
 ShaderProgram *sp; //Pointer to the shader program
 
 bool blok = 1;
+bool head = 1;
 
 GLuint tex0;
 GLuint tex1;
 GLuint tex2;
 GLuint tex3;
 GLuint tex4;
+GLuint tex5;
+GLuint tex6;
 
 //Error processing callback procedure
 void error_callback(int error, const char* description) {
@@ -68,6 +73,7 @@ void keyCallback(GLFWwindow* window,int key,int scancode,int action,int mods) {
         if (key==GLFW_KEY_KP_ADD) speed_zoom=5;
         if (key==GLFW_KEY_KP_SUBTRACT) speed_zoom=-5;
         if (key==GLFW_KEY_Q) blok = (blok + 1) % 2;
+        if (key==GLFW_KEY_W) head = (head + 1) % 2;
     }
     if (action==GLFW_RELEASE) {
         if (key==GLFW_KEY_LEFT) speed_x=0;
@@ -124,6 +130,8 @@ void initOpenGLProgram(GLFWwindow* window) {
     tex2=readTexture("metal_spec.png");
     tex3=readTexture("metal_jajca.png");
     tex4=readTexture("amelinium.png");
+    tex5=readTexture("szary.png");
+    tex6=readTexture("matowy.png");
 }
 
 //Release resources allocated by the program
@@ -135,6 +143,8 @@ void freeOpenGLProgram(GLFWwindow* window) {
     glDeleteTextures(1,&tex2);
     glDeleteTextures(1,&tex3);
     glDeleteTextures(1,&tex4);
+    glDeleteTextures(1,&tex5);
+    glDeleteTextures(1,&tex6);
 
     delete sp;
 }
@@ -215,7 +225,15 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
     glm::mat4 M2=glm::rotate(M,angle_z,glm::vec3(0.0f,0.0f,1.0f));
 
     if(blok)
-        drawSth(M , blokVertices , blokNormals , blokTexCoords , blokVertexCount , tex0 , tex1 , tex2);
+        drawSth(M , blokVertices , blokNormals , blokTexCoords , blokVertexCount , tex5 , tex1 , tex6);
+
+    if(head)
+        drawSth(M , headVertices , headNormals , headTexCoords , headVertexCount , tex0 , tex1 , tex3);
+
+    glm::mat4 Mw = glm::translate(M , glm::vec3(0.0f,6.9f,0.0f));
+    Mw = glm::rotate(Mw , angle_z/2 , glm::vec3(0.0f,0.0f,1.0f));
+
+    drawSth(Mw , walekVertices , walekNormals , walekTexCoords , walekVertexCount , tex4 , tex1 , tex3);
 
     drawSth(M2 , wal1Vertices , wal1Normals , wal1TexCoords , wal1VertexCount , tex4 , tex1 , tex3);
     drawSth(M2 , wal2Vertices , wal2Normals , wal2TexCoords , wal2VertexCount , tex0 , tex1 , tex2);

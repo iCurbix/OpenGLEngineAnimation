@@ -1033,7 +1033,7 @@
 	<OpenGL/glu.h>
 	<GL/glu.h>
 
-1561118750 source:h:\github\openglengineanimation\en_szkielet07_win\main_file.cpp
+1561153750 source:h:\github\openglengineanimation\en_szkielet07_win\main_file.cpp
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	<glm/glm.hpp>
@@ -1053,6 +1053,9 @@
 	"wal2.h"
 	"piston.h"
 	"wajcha.h"
+	"blok.h"
+	"head.h"
+	"walek.h"
 
 1561062343 h:\github\openglengineanimation\en_szkielet07_win\glfw\include\glfw\glfw3.h
 	<stddef.h>
@@ -1971,9 +1974,15 @@
 
 1561062344 h:\github\openglengineanimation\en_szkielet07_win\wal1.h
 
-1561062344 h:\github\openglengineanimation\en_szkielet07_win\wal2.h
+1561153215 h:\github\openglengineanimation\en_szkielet07_win\wal2.h
 
 1561062344 h:\github\openglengineanimation\en_szkielet07_win\piston.h
 
 1561062344 h:\github\openglengineanimation\en_szkielet07_win\wajcha.h
+
+1561157657 h:\github\openglengineanimation\en_szkielet07_win\blok.h
+
+1561158331 h:\github\openglengineanimation\en_szkielet07_win\head.h
+
+1561151783 h:\github\openglengineanimation\en_szkielet07_win\walek.h
 
