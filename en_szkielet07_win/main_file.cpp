@@ -35,6 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "wal2.h"
 #include "piston.h"
 #include "wajcha.h"
+#include "blok.h"
 
 float speed_x=0; //angular speed in radians
 float speed_y=0; //angular speed in radians
@@ -43,6 +44,8 @@ float zoom = -15;
 float speed_zoom = 0;
 float aspectRatio=1;
 ShaderProgram *sp; //Pointer to the shader program
+
+bool blok = 1;
 
 GLuint tex0;
 GLuint tex1;
@@ -64,6 +67,7 @@ void keyCallback(GLFWwindow* window,int key,int scancode,int action,int mods) {
         if (key==GLFW_KEY_DOWN) speed_y=-PI/2;
         if (key==GLFW_KEY_KP_ADD) speed_zoom=5;
         if (key==GLFW_KEY_KP_SUBTRACT) speed_zoom=-5;
+        if (key==GLFW_KEY_Q) blok = (blok + 1) % 2;
     }
     if (action==GLFW_RELEASE) {
         if (key==GLFW_KEY_LEFT) speed_x=0;
@@ -209,6 +213,9 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
     M=glm::translate(M,glm::vec3(0.0f,-4.0f,0.0f));
     //M2=glm::translate(M2,glm::vec3(0.0f,-4.0f,0.0f));
     glm::mat4 M2=glm::rotate(M,angle_z,glm::vec3(0.0f,0.0f,1.0f));
+
+    if(blok)
+        drawSth(M , blokVertices , blokNormals , blokTexCoords , blokVertexCount , tex0 , tex1 , tex2);
 
     drawSth(M2 , wal1Vertices , wal1Normals , wal1TexCoords , wal1VertexCount , tex4 , tex1 , tex3);
     drawSth(M2 , wal2Vertices , wal2Normals , wal2TexCoords , wal2VertexCount , tex0 , tex1 , tex2);

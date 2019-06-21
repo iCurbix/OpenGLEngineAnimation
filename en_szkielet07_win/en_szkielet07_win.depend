@@ -1033,7 +1033,7 @@
 	<OpenGL/glu.h>
 	<GL/glu.h>
 
-1561065886 source:h:\github\openglengineanimation\en_szkielet07_win\main_file.cpp
+1561118750 source:h:\github\openglengineanimation\en_szkielet07_win\main_file.cpp
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	<glm/glm.hpp>
