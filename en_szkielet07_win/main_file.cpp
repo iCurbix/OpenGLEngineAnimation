@@ -38,6 +38,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "blok.h"
 #include "head.h"
 #include "walek.h"
+#include "valve.h"
+#include "pokrywka.h"
 
 float speed_x=0; //angular speed in radians
 float speed_y=0; //angular speed in radians
@@ -49,6 +51,7 @@ ShaderProgram *sp; //Pointer to the shader program
 
 bool blok = 1;
 bool head = 1;
+bool pokrywka = 1;
 
 GLuint tex0;
 GLuint tex1;
@@ -57,6 +60,7 @@ GLuint tex3;
 GLuint tex4;
 GLuint tex5;
 GLuint tex6;
+GLuint tex7;
 
 //Error processing callback procedure
 void error_callback(int error, const char* description) {
@@ -74,6 +78,7 @@ void keyCallback(GLFWwindow* window,int key,int scancode,int action,int mods) {
         if (key==GLFW_KEY_KP_SUBTRACT) speed_zoom=-5;
         if (key==GLFW_KEY_Q) blok = (blok + 1) % 2;
         if (key==GLFW_KEY_W) head = (head + 1) % 2;
+        if (key==GLFW_KEY_E) pokrywka = (pokrywka + 1) % 2;
     }
     if (action==GLFW_RELEASE) {
         if (key==GLFW_KEY_LEFT) speed_x=0;
@@ -132,6 +137,7 @@ void initOpenGLProgram(GLFWwindow* window) {
     tex4=readTexture("amelinium.png");
     tex5=readTexture("szary.png");
     tex6=readTexture("matowy.png");
+    tex7=readTexture("czerwony.png");
 }
 
 //Release resources allocated by the program
@@ -145,6 +151,7 @@ void freeOpenGLProgram(GLFWwindow* window) {
     glDeleteTextures(1,&tex4);
     glDeleteTextures(1,&tex5);
     glDeleteTextures(1,&tex6);
+    glDeleteTextures(1,&tex7);
 
     delete sp;
 }
@@ -224,14 +231,42 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
     //M2=glm::translate(M2,glm::vec3(0.0f,-4.0f,0.0f));
     glm::mat4 M2=glm::rotate(M,angle_z,glm::vec3(0.0f,0.0f,1.0f));
 
+    glm::mat4 Mv = glm::translate(M , glm::vec3(0.0f,6.2f,0.5f));
+    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+
+    Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,1.8f));
+    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+
+    Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,0.8f));
+    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+
+    Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,-1.8f));
+    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+
+    Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,-1.8f));
+    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+
+    Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,-1.8f));
+    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+
+    Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,-0.8f));
+    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+
+    Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,1.8f));
+    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+
+
     if(blok)
-        drawSth(M , blokVertices , blokNormals , blokTexCoords , blokVertexCount , tex5 , tex1 , tex6);
+        drawSth(M , blokVertices , blokNormals , blokTexCoords , blokVertexCount , tex5 , tex5 , tex6);
 
     if(head)
-        drawSth(M , headVertices , headNormals , headTexCoords , headVertexCount , tex0 , tex1 , tex3);
+        drawSth(M , headVertices , headNormals , headTexCoords , headVertexCount , tex5 , tex5 , tex3);
+
+    if(pokrywka)
+        drawSth(M , pokrywkaVertices , pokrywkaNormals , pokrywkaTexCoords , pokrywkaVertexCount , tex7 , tex5 , tex3);
 
     glm::mat4 Mw = glm::translate(M , glm::vec3(0.0f,6.9f,0.0f));
-    Mw = glm::rotate(Mw , angle_z/2 , glm::vec3(0.0f,0.0f,1.0f));
+    Mw = glm::rotate(Mw , angle_z/2-PI/4 , glm::vec3(0.0f,0.0f,1.0f));
 
     drawSth(Mw , walekVertices , walekNormals , walekTexCoords , walekVertexCount , tex4 , tex1 , tex3);
 
@@ -269,6 +304,7 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
     drawSth(M , pistonVertices , pistonNormals , pistonTexCoords , pistonVertexCount , tex4 , tex1 , tex3);
     M=glm::translate(M,glm::vec3(0.0f,0.0f,-5.4f));
     drawSth(M , pistonVertices , pistonNormals , pistonTexCoords , pistonVertexCount , tex4 , tex1 , tex3);
+
 
     glfwSwapBuffers(window); //Copy back buffer to front buffer
 }
