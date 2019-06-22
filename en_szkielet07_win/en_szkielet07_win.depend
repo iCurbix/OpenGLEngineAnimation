@@ -1033,7 +1033,7 @@
 	<OpenGL/glu.h>
 	<GL/glu.h>
 
-1561216844 source:h:\github\openglengineanimation\en_szkielet07_win\main_file.cpp
+1561226276 source:h:\github\openglengineanimation\en_szkielet07_win\main_file.cpp
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	<glm/glm.hpp>
@@ -1984,11 +1984,11 @@
 
 1561157657 h:\github\openglengineanimation\en_szkielet07_win\blok.h
 
-1561211108 h:\github\openglengineanimation\en_szkielet07_win\head.h
+1561228210 h:\github\openglengineanimation\en_szkielet07_win\head.h
 
 1561151783 h:\github\openglengineanimation\en_szkielet07_win\walek.h
 
 1561214003 h:\github\openglengineanimation\en_szkielet07_win\valve.h
 
-1561217154 h:\github\openglengineanimation\en_szkielet07_win\pokrywka.h
+1561217224 h:\github\openglengineanimation\en_szkielet07_win\pokrywka.h
 

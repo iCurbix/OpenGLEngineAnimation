@@ -191,6 +191,31 @@ glm::mat4 drawSth(glm::mat4 M , float *verts , float *normals , float *texCoords
     return M;
 }
 
+double r = 0.1 , R = 0.4;
+double f = atan(r*sqrt(2)/(R+r*sqrt(2)));
+double h(double fi) {return sqrt(pow(r,2) + pow(R+r,2) - 2*r*(R+r)*cos(fi-PI/2));}
+
+double wychylenie(double fi){
+    fi /= 2;
+    if(fi < 5*PI/4)
+        return R;
+    if(fi < 3*PI/2-f){
+        double a1 = (R-h(3*PI/2-f))/(f-PI/4);
+        return a1*fi + (R-5*PI*a1/4);
+    }
+    if(fi < 3*PI/2+f)
+        return h(fi);
+    if(fi < 7*PI/4){
+        double a2 = (h(3*PI/2+f)-R)/(f-PI/4);
+        return a2*fi + (R-7*PI*a2/4);
+    }
+    return R;
+}
+
+float wych(float fi){
+    if(fi > 4 * PI) fi -= 4*PI;
+    return -1*(float)wychylenie((double)fi);
+}
 
 //Drawing procedure
 void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
@@ -231,29 +256,29 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
     //M2=glm::translate(M2,glm::vec3(0.0f,-4.0f,0.0f));
     glm::mat4 M2=glm::rotate(M,angle_z,glm::vec3(0.0f,0.0f,1.0f));
 
-    glm::mat4 Mv = glm::translate(M , glm::vec3(0.0f,6.2f,0.5f));
-    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+    glm::mat4 Mv = glm::translate(M , glm::vec3(0.0f,6.6f,0.5f));
+    drawSth(glm::translate(Mv,glm::vec3(0.0f,wych(angle_z+5*PI/2),0.0f)) , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
 
     Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,1.8f));
-    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+    drawSth(glm::translate(Mv,glm::vec3(0.0f,wych(angle_z+3*PI/2),0.0f)) , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
 
     Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,0.8f));
-    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+    drawSth(glm::translate(Mv,glm::vec3(0.0f,wych(angle_z+5*PI/2),0.0f)) , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
 
     Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,-1.8f));
-    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+    drawSth(glm::translate(Mv,glm::vec3(0.0f,wych(angle_z+7*PI/2),0.0f)) , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
 
     Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,-1.8f));
-    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+    drawSth(glm::translate(Mv,glm::vec3(0.0f,wych(angle_z+3*PI/2),0.0f)) , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
 
     Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,-1.8f));
-    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+    drawSth(glm::translate(Mv,glm::vec3(0.0f,wych(angle_z+9*PI/2),0.0f)) , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
 
     Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,-0.8f));
-    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+    drawSth(glm::translate(Mv,glm::vec3(0.0f,wych(angle_z+7*PI/2),0.0f)) , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
 
     Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,1.8f));
-    drawSth(Mv , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
+    drawSth(glm::translate(Mv,glm::vec3(0.0f,wych(angle_z+9*PI/2),0.0f)) , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
 
 
     if(blok)
@@ -349,7 +374,8 @@ int main(void)
 	{
         angle_x+=speed_x*glfwGetTime(); //Add angle by which the object was rotated in the previous iteration
 		angle_y+=speed_y*glfwGetTime(); //Add angle by which the object was rotated in the previous iteration
-		angle_z+=speed_z*glfwGetTime(); //Add angle by which the object was rotated in the previous iteration
+		angle_z+=speed_z*glfwGetTime();//Add angle by which the object was rotated in the previous iteration
+		if(angle_z > 4*PI) angle_z -= 4*PI;
 		zoom += speed_zoom*glfwGetTime();
         glfwSetTime(0); //Zero the timer
 		drawScene(window,angle_x,angle_y,angle_z); //Execute drawing procedure
