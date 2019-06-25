@@ -40,6 +40,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "walek.h"
 #include "valve.h"
 #include "pokrywka.h"
+#include "pas.h"
+#include "malyzeb.h"
+#include "duzyzeb.h"
 
 float speed_x=0; //angular speed in radians
 float speed_y=0; //angular speed in radians
@@ -61,6 +64,7 @@ GLuint tex4;
 GLuint tex5;
 GLuint tex6;
 GLuint tex7;
+GLuint tex8;
 
 //Error processing callback procedure
 void error_callback(int error, const char* description) {
@@ -138,6 +142,7 @@ void initOpenGLProgram(GLFWwindow* window) {
     tex5=readTexture("szary.png");
     tex6=readTexture("matowy.png");
     tex7=readTexture("czerwony.png");
+    tex8=readTexture("czarny.png");
 }
 
 //Release resources allocated by the program
@@ -152,6 +157,7 @@ void freeOpenGLProgram(GLFWwindow* window) {
     glDeleteTextures(1,&tex5);
     glDeleteTextures(1,&tex6);
     glDeleteTextures(1,&tex7);
+    glDeleteTextures(1,&tex8);
 
     delete sp;
 }
@@ -229,16 +235,8 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
         glm::vec3(0.0f,1.0f,0.0f)); //compute view matrix
     glm::mat4 P=glm::perspective(50.0f*PI/180.0f, aspectRatio, 1.0f, 50.0f); //compute projection matrix
 
-
-	//Teapot
-	/*float *verts=myTeapotVertices;
-	float *normals=myTeapotVertexNormals;
-	float *texCoords=myTeapotTexCoords;
-	unsigned int vertexCount=myTeapotVertexCount;*/
-
-
     sp->use();//activate shading program
-    //Send parameters to graphics card
+
     glUniformMatrix4fv(sp->u("P"),1,false,glm::value_ptr(P));
     glUniformMatrix4fv(sp->u("V"),1,false,glm::value_ptr(V));
 
@@ -248,13 +246,18 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
 
 
     glm::mat4 M=glm::mat4(1.0f);
-	M=glm::rotate(M,angle_y,glm::vec3(1.0f,0.0f,0.0f)); //Compute model matrix
-	M=glm::rotate(M,angle_x,glm::vec3(0.0f,1.0f,0.0f)); //Compute model matrix
+	M=glm::rotate(M,angle_y,glm::vec3(1.0f,0.0f,0.0f));
+	M=glm::rotate(M,angle_x,glm::vec3(0.0f,1.0f,0.0f));
 	 //Compute model matrix
 
     M=glm::translate(M,glm::vec3(0.0f,-4.0f,0.0f));
     //M2=glm::translate(M2,glm::vec3(0.0f,-4.0f,0.0f));
     glm::mat4 M2=glm::rotate(M,angle_z,glm::vec3(0.0f,0.0f,1.0f));
+
+    drawSth(glm::translate(M2,glm::vec3(0.0f,0.0f,-4.0f)) , malyzebVertices , malyzebNormals , malyzebTexCoords , malyzebVertexCount , tex4 , tex1 , tex3);
+
+    glm::mat4 Mp=glm::translate(M,glm::vec3(0.0f,0.0f,-4.0f));
+    drawSth(Mp , pasVertices , pasNormals , pasTexCoords , pasVertexCount , tex8 , tex5 , tex3);
 
     glm::mat4 Mv = glm::translate(M , glm::vec3(0.0f,6.6f,0.5f));
     drawSth(glm::translate(Mv,glm::vec3(0.0f,wych(angle_z+5*PI/2),0.0f)) , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
@@ -285,7 +288,7 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
         drawSth(M , blokVertices , blokNormals , blokTexCoords , blokVertexCount , tex5 , tex5 , tex6);
 
     if(head)
-        drawSth(M , headVertices , headNormals , headTexCoords , headVertexCount , tex5 , tex5 , tex3);
+        drawSth(M , headVertices , headNormals , headTexCoords , headVertexCount , tex3 , tex5 , tex3);
 
     if(pokrywka)
         drawSth(M , pokrywkaVertices , pokrywkaNormals , pokrywkaTexCoords , pokrywkaVertexCount , tex7 , tex5 , tex3);
@@ -294,6 +297,8 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
     Mw = glm::rotate(Mw , angle_z/2-PI/4 , glm::vec3(0.0f,0.0f,1.0f));
 
     drawSth(Mw , walekVertices , walekNormals , walekTexCoords , walekVertexCount , tex4 , tex1 , tex3);
+
+    drawSth(glm::translate(Mw,glm::vec3(0.0f,0.0f,-4.0f)) , duzyzebVertices , duzyzebNormals , duzyzebTexCoords , duzyzebVertexCount , tex4 , tex1 , tex3);
 
     drawSth(M2 , wal1Vertices , wal1Normals , wal1TexCoords , wal1VertexCount , tex4 , tex1 , tex3);
     drawSth(M2 , wal2Vertices , wal2Normals , wal2TexCoords , wal2VertexCount , tex0 , tex1 , tex2);
