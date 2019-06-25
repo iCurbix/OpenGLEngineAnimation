@@ -1,7 +1,6 @@
 #version 330
 
 
-//Varying variables
 in vec4 l;
 in vec4 l2;
 in vec4 n;
@@ -13,7 +12,7 @@ uniform sampler2D textureMap0;
 uniform sampler2D textureMap1;
 uniform sampler2D textureMap2;
 
-out vec4 pixelColor; //Fragment shader output variable
+out vec4 pixelColor;
 
 void main(void) {
     vec4 kd=vec4(0,0,0,1);
@@ -41,5 +40,5 @@ void main(void) {
 
 	vec4 co=vec4(kd.rgb*ld.rgb*nl+ks.rgb*ls.rgb*rv,kd.a);
     vec4 co2=vec4(kd.rgb*ld.rgb*nl2+ks.rgb*ls.rgb*rv2,kd.a);
-	pixelColor=co*0.7+co2*0.7;
+	pixelColor=clamp(co*0.7+co2*0.7,0,1);
 }

@@ -1,18 +1,15 @@
 #version 330
 
-//Uniform variables
 uniform mat4 P;
 uniform mat4 V;
 uniform mat4 M;
-uniform vec4 lp; //Light source coordinates in world space
-uniform vec4 lp2; //Light source coordinates in world space
+uniform vec4 lp;
+uniform vec4 lp2;
 
-//Attributes
-in vec4 vertex; //vertex coordinates in model space
-in vec4 normal; //normal vector coordinates in model space
-in vec2 texCoord0; //texturing coordinates
+in vec4 vertex;
+in vec4 normal;
+in vec2 texCoord0;
 
-//Varying variables
 out vec4 l;
 out vec4 l2;
 out vec4 n;

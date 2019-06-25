@@ -44,13 +44,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "malyzeb.h"
 #include "duzyzeb.h"
 
-float speed_x=0; //angular speed in radians
-float speed_y=0; //angular speed in radians
-float speed_z=0; //angular speed in radians
+float speed_x=0;
+float speed_y=0;
+float speed_z=0;
 float zoom = -15;
 float speed_zoom = 0;
 float aspectRatio=1;
-ShaderProgram *sp; //Pointer to the shader program
+ShaderProgram *sp;
 
 bool blok = 1;
 bool head = 1;
@@ -66,7 +66,6 @@ GLuint tex6;
 GLuint tex7;
 GLuint tex8;
 
-//Error processing callback procedure
 void error_callback(int error, const char* description) {
 	fputs(description, stderr);
 }
@@ -100,8 +99,6 @@ void windowResizeCallback(GLFWwindow* window,int width,int height) {
     glViewport(0,0,width,height);
 }
 
-
-//Function for reading texture files
 GLuint readTexture(const char* filename) {
   GLuint tex;
   glActiveTexture(GL_TEXTURE0);
@@ -125,9 +122,7 @@ GLuint readTexture(const char* filename) {
   return tex;
 }
 
-//Initialization code procedure
 void initOpenGLProgram(GLFWwindow* window) {
-	//************Place any code here that needs to be executed once, at the program start************
 	glClearColor(0,0,0,1);
 	glEnable(GL_DEPTH_TEST);
 	glfwSetWindowSizeCallback(window,windowResizeCallback);
@@ -145,10 +140,7 @@ void initOpenGLProgram(GLFWwindow* window) {
     tex8=readTexture("czarny.png");
 }
 
-//Release resources allocated by the program
 void freeOpenGLProgram(GLFWwindow* window) {
-	//************Place any code here that needs to be executed once, after the main loop ends************
-
     glDeleteTextures(1,&tex0);
     glDeleteTextures(1,&tex1);
     glDeleteTextures(1,&tex2);
@@ -179,20 +171,20 @@ glm::mat4 drawSth(glm::mat4 M , float *verts , float *normals , float *texCoords
 
 	glUniformMatrix4fv(sp->u("M"),1,false,glm::value_ptr(M));
 
-    glEnableVertexAttribArray(sp->a("vertex")); //Enable sending data to the attribute vertex
-    glVertexAttribPointer(sp->a("vertex"),4,GL_FLOAT,false,0,verts); //Specify source of the data for the attribute vertex
+    glEnableVertexAttribArray(sp->a("vertex"));
+    glVertexAttribPointer(sp->a("vertex"),4,GL_FLOAT,false,0,verts);
 
-    glEnableVertexAttribArray(sp->a("normal")); //Enable sending data to the attribute normal
-    glVertexAttribPointer(sp->a("normal"),4,GL_FLOAT,false,0,normals); //Specify source of the data for the attribute normal
+    glEnableVertexAttribArray(sp->a("normal"));
+    glVertexAttribPointer(sp->a("normal"),4,GL_FLOAT,false,0,normals);
 
-    glEnableVertexAttribArray(sp->a("texCoord0")); //Enable sending data to the attribute color
-    glVertexAttribPointer(sp->a("texCoord0"),2,GL_FLOAT,false,0,texCoords); //Specify source of the data for the attribute color
+    glEnableVertexAttribArray(sp->a("texCoord0"));
+    glVertexAttribPointer(sp->a("texCoord0"),2,GL_FLOAT,false,0,texCoords);
 
-    glDrawArrays(GL_TRIANGLES,0,vertexCount); //Draw the object
+    glDrawArrays(GL_TRIANGLES,0,vertexCount);
 
-    glDisableVertexAttribArray(sp->a("vertex")); //Disable sending data to the attribute vertex
-    glDisableVertexAttribArray(sp->a("normal")); //Disable sending data to the attribute normal
-    glDisableVertexAttribArray(sp->a("texCoord0")); //Disable sending data to the attribute color
+    glDisableVertexAttribArray(sp->a("vertex"));
+    glDisableVertexAttribArray(sp->a("normal"));
+    glDisableVertexAttribArray(sp->a("texCoord0"));
 
     return M;
 }
@@ -225,8 +217,6 @@ float wych(float fi){
 
 //Drawing procedure
 void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
-	//************Place any code here that draws something inside the window******************l
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glm::mat4 V=glm::lookAt(
@@ -235,23 +225,22 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
         glm::vec3(0.0f,1.0f,0.0f)); //compute view matrix
     glm::mat4 P=glm::perspective(50.0f*PI/180.0f, aspectRatio, 1.0f, 50.0f); //compute projection matrix
 
-    sp->use();//activate shading program
+    sp->use();
 
     glUniformMatrix4fv(sp->u("P"),1,false,glm::value_ptr(P));
     glUniformMatrix4fv(sp->u("V"),1,false,glm::value_ptr(V));
 
-    glUniform4f(sp->u("lp"),0,8,-2,1); //Light coordinates in the world space
-    glUniform4f(sp->u("lp2"),0,0,-8,1); //Light coordinates in the world space
+    //Light coordinates in the world space
+    glUniform4f(sp->u("lp"),0,8,-2,1);
+    glUniform4f(sp->u("lp2"),0,0,-8,1);
 
 
 
     glm::mat4 M=glm::mat4(1.0f);
 	M=glm::rotate(M,angle_y,glm::vec3(1.0f,0.0f,0.0f));
 	M=glm::rotate(M,angle_x,glm::vec3(0.0f,1.0f,0.0f));
-	 //Compute model matrix
-
     M=glm::translate(M,glm::vec3(0.0f,-4.0f,0.0f));
-    //M2=glm::translate(M2,glm::vec3(0.0f,-4.0f,0.0f));
+
     glm::mat4 M2=glm::rotate(M,angle_z,glm::vec3(0.0f,0.0f,1.0f));
 
     drawSth(glm::translate(M2,glm::vec3(0.0f,0.0f,-4.0f)) , malyzebVertices , malyzebNormals , malyzebTexCoords , malyzebVertexCount , tex4 , tex1 , tex3);
@@ -283,12 +272,11 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
     Mv = glm::translate(Mv , glm::vec3(0.0f,0.0f,1.8f));
     drawSth(glm::translate(Mv,glm::vec3(0.0f,wych(angle_z+9*PI/2),0.0f)) , valveVertices , valveNormals , valveTexCoords , valveVertexCount , tex4 , tex1 , tex3);
 
-
     if(blok)
         drawSth(M , blokVertices , blokNormals , blokTexCoords , blokVertexCount , tex5 , tex5 , tex6);
 
     if(head)
-        drawSth(M , headVertices , headNormals , headTexCoords , headVertexCount , tex3 , tex5 , tex3);
+        drawSth(M , headVertices , headNormals , headTexCoords , headVertexCount , tex4 , tex5 , tex5);
 
     if(pokrywka)
         drawSth(M , pokrywkaVertices , pokrywkaNormals , pokrywkaTexCoords , pokrywkaVertexCount , tex7 , tex5 , tex3);
@@ -336,59 +324,59 @@ void drawScene(GLFWwindow* window,float angle_x,float angle_y,float angle_z) {
     drawSth(M , pistonVertices , pistonNormals , pistonTexCoords , pistonVertexCount , tex4 , tex1 , tex3);
 
 
-    glfwSwapBuffers(window); //Copy back buffer to front buffer
+    glfwSwapBuffers(window);
 }
 
 int main(void)
 {
-	GLFWwindow* window; //Pointer to object that represents the application window
+	GLFWwindow* window;
 
-	glfwSetErrorCallback(error_callback);//Register error processing callback procedure
+	glfwSetErrorCallback(error_callback);
 
-	if (!glfwInit()) { //Initialize GLFW library
+	if (!glfwInit()) {
 		fprintf(stderr, "Can't initialize GLFW.\n");
 		exit(EXIT_FAILURE);
 	}
 
-	window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);  //Create a window 500pxx500px titled "OpenGL" and an OpenGL context associated with it.
+	window = glfwCreateWindow(500, 500, "OpenGL", NULL, NULL);
 
-	if (!window) //If no window is opened then close the program
+	if (!window)
 	{
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
 
-	glfwMakeContextCurrent(window); //Since this moment OpenGL context corresponding to the window is active and all OpenGL calls will refer to this context.
-	glfwSwapInterval(1); //During vsync wait for the first refresh
+	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1);
 
 	GLenum err;
-	if ((err=glewInit()) != GLEW_OK) { //Initialize GLEW library
+	if ((err=glewInit()) != GLEW_OK) {
 		fprintf(stderr, "Can't initialize GLEW: %s\n", glewGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
 
-	initOpenGLProgram(window); //Call initialization procedure
+	initOpenGLProgram(window);
 
 
-	float angle_x=0; //current rotation angle of the object, x axis
-	float angle_y=0; //current rotation angle of the object, y axis
-	float angle_z=0; //current rotation angle of the object, y axis
-	glfwSetTime(0); //Zero the timer
-	//Main application loop
-	while (!glfwWindowShouldClose(window)) //As long as the window shouldnt be closed yet...
+	float angle_x=0;
+	float angle_y=0;
+	float angle_z=0;
+	glfwSetTime(0);
+
+	while (!glfwWindowShouldClose(window))
 	{
-        angle_x+=speed_x*glfwGetTime(); //Add angle by which the object was rotated in the previous iteration
-		angle_y+=speed_y*glfwGetTime(); //Add angle by which the object was rotated in the previous iteration
-		angle_z+=speed_z*glfwGetTime();//Add angle by which the object was rotated in the previous iteration
+        angle_x+=speed_x*glfwGetTime();
+		angle_y+=speed_y*glfwGetTime();
+		angle_z+=speed_z*glfwGetTime();
 		if(angle_z > 4*PI) angle_z -= 4*PI;
 		zoom += speed_zoom*glfwGetTime();
-        glfwSetTime(0); //Zero the timer
-		drawScene(window,angle_x,angle_y,angle_z); //Execute drawing procedure
-		glfwPollEvents(); //Process callback procedures corresponding to the events that took place up to now
+        glfwSetTime(0);
+		drawScene(window,angle_x,angle_y,angle_z);
+		glfwPollEvents();
 	}
 	freeOpenGLProgram(window);
 
-	glfwDestroyWindow(window); //Delete OpenGL context and the window.
-	glfwTerminate(); //Free GLFW resources
+	glfwDestroyWindow(window);
+	glfwTerminate();
 	exit(EXIT_SUCCESS);
 }
